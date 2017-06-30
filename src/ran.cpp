@@ -82,11 +82,8 @@ void TrafficMonitor::initialize() {
 int getHash(string ip,int size){
 
 	ip = ip.substr(ip.find_last_of('.')+1, ip.size());
-	TRACE(cout<<"ipval:"<<ip<<endl;)
 	int index = stoi(ip);
-	TRACE(cout<<"preindex:"<<index<<" "<<size<<endl;)
 	index = index % size;
-	TRACE(cout<<"index:"<<index<<endl;)
 	return index;
 }
 void TrafficMonitor::handle_uplink_udata() {
@@ -99,9 +96,7 @@ void TrafficMonitor::handle_uplink_udata() {
 	bool res;
 
 	tun.rcv(pkt);
-	//XXX change
 	ip_addr = g_nw.get_src_ip_addr(pkt);
-	//cout<<"grabbed packet from tun1"<<ip_addr<<endl;
 
 	res = get_uplink_info(ip_addr, s1_uteid_ul, sgw_s1_ip_addr, sgw_s1_port);
 	if (res == true) {
@@ -153,15 +148,15 @@ void Ran::init(int arg) {
 void Ran::conn_mme() {
 
 	if(UE_BINDING == STATE_LESS){
-		mme_client_attach_1.conn(epc_addrs.mme_ip_addr, epc_addrs.mme_port);//cout << "it does work:"<< endl;
+		mme_client_attach_1.conn(epc_addrs.mme_ip_addr, epc_addrs.mme_port);
 		mme_client_attach_2.conn(epc_addrs.mme_ip_addr, epc_addrs.mme_port);
 		mme_client_attach_3.conn(epc_addrs.mme_ip_addr, epc_addrs.mme_port);
 		mme_client_attach_4.conn(epc_addrs.mme_ip_addr, epc_addrs.mme_port);
 		mme_client_detach.conn(epc_addrs.mme_ip_addr, epc_addrs.mme_port);
 	}	
-	else if(UE_BINDING == SESSION_BASED){//cout << "SBit does work:"<< endl;
+	else if(UE_BINDING == SESSION_BASED){
 		mme_client_attach_1.conn(epc_addrs.mme_ip_addr, epc_addrs.mme_port);
-		mme_client_detach.conn(epc_addrs.mme_ip_addr, epc_addrs.mme_port);//cout << "SB2it does work:"<< endl;
+		mme_client_detach.conn(epc_addrs.mme_ip_addr, epc_addrs.mme_port);
 	}
 	else if(UE_BINDING == UE_BASED){
 		mme_client_attach_1.conn(epc_addrs.mme_ip_addr, epc_addrs.mme_port);
@@ -178,7 +173,7 @@ void Ran::clean_conn_mme() {
 		mme_client_attach_4.release();
 		mme_client_detach.release();
 	}	
-	else if(UE_BINDING == SESSION_BASED){//cout << "SBit does work:"<< endl;
+	else if(UE_BINDING == SESSION_BASED){
 		mme_client_attach_1.release();
 		mme_client_detach.release();
 	}
@@ -240,15 +235,15 @@ bool Ran::authenticate() {
 	pkt.prepend_s1ap_hdr(2, pkt.len, ran_ctx.enodeb_s1ap_ue_id, ran_ctx.mme_s1ap_ue_id);
 
 	if(UE_BINDING==STATE_LESS){
-			mme_client_attach_2.snd(pkt);/*XCHANGE 2*/
+			mme_client_attach_2.snd(pkt);
 	}	
 	else if(UE_BINDING==SESSION_BASED){
-		mme_client_attach_1.snd(pkt);/*XCHANGE 2*///cout<<"sess based xch1"<<endl;
+		mme_client_attach_1.snd(pkt);
 				TRACE(cout << "it does work:"<< endl;)
 
 	}
 	else if(UE_BINDING==UE_BASED){
-		mme_client_attach_1.snd(pkt);/*XCHANGE 2*/
+		mme_client_attach_1.snd(pkt);
 	}
 
 	TRACE(cout << "ran_authenticate:" << " autn response sent to mme: " << ran_ctx.imsi << endl;)
@@ -262,13 +257,13 @@ bool Ran::set_security() {
 	
 	
 	if(UE_BINDING==STATE_LESS){
-			mme_client_attach_2.rcv(pkt);/*XCHANGE 2*/
+			mme_client_attach_2.rcv(pkt);
 	}	
 	else if(UE_BINDING==SESSION_BASED){
-		mme_client_attach_1.rcv(pkt);/*XCHANGE 2*///cout<<"sess based xch2"<<endl;
+		mme_client_attach_1.rcv(pkt);
 	}
 	else if(UE_BINDING==UE_BASED){
-		mme_client_attach_1.rcv(pkt);/*XCHANGE 2*/
+		mme_client_attach_1.rcv(pkt);
 	}
 	if (pkt.len <= 0) {
 		return false;
@@ -308,13 +303,13 @@ bool Ran::set_security() {
 	pkt.prepend_s1ap_hdr(3, pkt.len, ran_ctx.enodeb_s1ap_ue_id, ran_ctx.mme_s1ap_ue_id);
 
 	if(UE_BINDING==STATE_LESS){
-		mme_client_attach_3.snd(pkt);/*XCHANGE 3*/
+		mme_client_attach_3.snd(pkt);
 	}	
 	else if(UE_BINDING==SESSION_BASED){
-		mme_client_attach_1.snd(pkt);/*XCHANGE 3*///cout<<"sess based xch3"<<endl;
+		mme_client_attach_1.snd(pkt);
 
 	}else if(UE_BINDING==UE_BASED){
-		mme_client_attach_1.snd(pkt);/*XCHANGE 3*/
+		mme_client_attach_1.snd(pkt);
 	}
 
 	
@@ -340,13 +335,13 @@ bool Ran::set_eps_session(TrafficMonitor &traf_mon) {
 	
 
 	if(UE_BINDING==STATE_LESS){
-			mme_client_attach_3.rcv(pkt);/*XCHANGE 3*/
+			mme_client_attach_3.rcv(pkt);
 	}	
 	else if(UE_BINDING==SESSION_BASED){
-			mme_client_attach_1.rcv(pkt);/*XCHANGE 3*///cout<<"sess based xch3"<<endl;
+			mme_client_attach_1.rcv(pkt);
 
 	}else if(UE_BINDING==UE_BASED){
-			mme_client_attach_1.rcv(pkt);/*XCHANGE 3*/
+			mme_client_attach_1.rcv(pkt);
 	}
 	if (pkt.len <= 0) {
 		return false;
@@ -399,7 +394,7 @@ bool Ran::set_eps_session(TrafficMonitor &traf_mon) {
 			mme_client_attach_4.snd(pkt);
 	}	
 	else if(UE_BINDING == SESSION_BASED){
-			mme_client_attach_1.snd(pkt);//cout<<"sess based xch4"<<endl;
+			mme_client_attach_1.snd(pkt);
 
 	}else if(UE_BINDING == UE_BASED){
 			mme_client_attach_1.snd(pkt);
@@ -413,7 +408,7 @@ bool Ran::set_eps_session(TrafficMonitor &traf_mon) {
 			mme_client_attach_4.rcv(pkt);
 	}	
 	else if(UE_BINDING==SESSION_BASED){
-			mme_client_attach_1.rcv(pkt);//cout<<"sess based xch4"<<endl;
+			mme_client_attach_1.rcv(pkt);
 	}
 	else if(UE_BINDING==UE_BASED){
 			mme_client_attach_1.rcv(pkt);
@@ -432,7 +427,7 @@ void Ran::transfer_data(int arg_rate) {
 	int server_port;
 	rate = " -b " + to_string(arg_rate) + "M";
 	mtu = " -M " + to_string(DATA_SIZE);
-	dur = " -t 30";
+	dur = " -t 30"; //change this to set duration of a data plane experiment e.g -t 300 for a 5 minute data plane burst
 	redir_err = " 2>&1";
 	server_ip_addr = "172.16.0.2";
 	server_port = ran_ctx.key + 55000;
